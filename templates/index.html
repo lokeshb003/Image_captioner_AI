@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Captioning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+            display: block;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Image Captioning</h1>
+    <input type="file" id="imageFile" accept="image/*">
+    <button onclick="uploadImage()">Upload and Caption</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    function uploadImage() {
+        const fileInput = document.getElementById('imageFile');
+        const formData = new FormData();
+
+        if (!fileInput.files[0]) {
+            alert("Please select an image.");
+            return;
+        }
+
+        formData.append('image', fileInput.files[0]);
+
+        fetch('http://127.0.0.1:5000/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            if (data.error) {
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+            } else if (data.text) {
+                resultDiv.innerHTML = `
+                    <h3>Caption:</h3>
+                    <p>${data.text}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = `<p style="color: red;">Unexpected response structure.</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<p style="color: red;">An error occurred: ${error.message}</p>`;
+        });
+    }
+</script>
+
+</body>
+</html>
