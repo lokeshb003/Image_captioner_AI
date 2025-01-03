@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Captioning</title>
+    <title>Certificate Analyzer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,24 +54,24 @@
 <body>
 
 <div class="container">
-    <h1>Image Captioning</h1>
-    <input type="file" id="imageFile" accept="image/*">
-    <button onclick="uploadImage()">Upload and Caption</button>
+    <h1>Certificate Analyzer</h1>
+    <input type="file" id="fileInput" accept="image/*, .pdf">
+    <button onclick="uploadFile()">Upload and Generate</button>
 
     <div class="result" id="result"></div>
 </div>
 
 <script>
-    function uploadImage() {
-        const fileInput = document.getElementById('imageFile');
+    function uploadFile() {
+        const fileInput = document.getElementById('fileInput');
         const formData = new FormData();
 
         if (!fileInput.files[0]) {
-            alert("Please select an image.");
+            alert("Please select a file.");
             return;
         }
 
-        formData.append('image', fileInput.files[0]);
+        formData.append('file', fileInput.files[0]);
 
         fetch('http://127.0.0.1:5000/upload', {
             method: 'POST',
@@ -84,7 +84,7 @@
                 resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
             } else if (data.text) {
                 resultDiv.innerHTML = `
-                    <h3>Caption:</h3>
+                    <h3>Generated Content:</h3>
                     <p>${data.text}</p>
                 `;
             } else {
@@ -101,3 +101,4 @@
 
 </body>
 </html>
+
